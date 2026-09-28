@@ -89,7 +89,7 @@ export function IslandTransferDemo({ tileDim, mapWidth, mapHeight, transferActiv
           y={start.y + (index % 2) * 0.65}
           speech={worker.speech}
           character={character}
-          active={transferActive && demo.event.active}
+          active={transferActive}
           transferBytesPerSecond={bytesPerSecond}
         />
       ))}
