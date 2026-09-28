@@ -84,9 +84,9 @@ export const PixiGame = (props: {
   const { width, height, tileDim } = props.game.worldMap;
   const players = [...props.game.world.players.values()];
   const { data: islandTelemetry, connected: islandTelemetryConnected } = useIslandTelemetry();
-  const transfer = islandTelemetry?.snapshot.transfers?.find(
-    (item) => item.source === 'kahf' && item.destination === 'jotha',
-  );
+  const transfer = islandTelemetry?.snapshot.transfer;
+  const kahfToJothaTransfer =
+    transfer?.source === 'kahf' && transfer.destination === 'jotha' ? transfer : undefined;
 
   // Zoom on the user’s avatar when it is created
   useEffect(() => {
@@ -117,8 +117,8 @@ export const PixiGame = (props: {
         tileDim={tileDim}
         mapWidth={width}
         mapHeight={height}
-        transferActive={islandTelemetryConnected && !!transfer?.active}
-        bytesPerSecond={transfer?.bytesPerSecond}
+        transferActive={islandTelemetryConnected && !!kahfToJothaTransfer?.active}
+        bytesPerSecond={kahfToJothaTransfer?.bytesPerSecond}
       />
       {players.map(
         (p) =>
