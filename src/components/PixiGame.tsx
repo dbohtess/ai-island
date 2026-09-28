@@ -121,8 +121,8 @@ export const PixiGame = (props: {
         tileDim={tileDim}
         mapWidth={width}
         mapHeight={height}
-        transferActive={islandTelemetryConnected && !!kahfToJothaTransfer?.active}
-        bytesPerSecond={kahfToJothaTransfer?.bytesPerSecond}
+        transferActive={!islandTelemetryConnected || !!kahfToJothaTransfer?.active}
+        bytesPerSecond={kahfToJothaTransfer?.bytesPerSecond ?? (!islandTelemetryConnected ? 8_000_000 : 0)}
       />
       {players.map(
         (p) =>
