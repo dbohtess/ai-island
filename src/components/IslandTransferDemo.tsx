@@ -9,13 +9,15 @@ import { JothaBuilding, KahfCave } from './IslandLandmarks';
 type Props = { tileDim: number; mapWidth: number; mapHeight: number; transferActive?: boolean; bytesPerSecond?: number };
 const WORKER_CHARACTER = 'f1';
 
-function TransferWorker({ index, tileDim, startX, endX, y, speech, character, active }: any) {
+function TransferWorker({ index, tileDim, startX, endX, y, speech, character, active, transferBytesPerSecond }: any) {
   const [progress, setProgress] = useState((index * 0.14) % 1);
   const direction = useRef<1 | -1>(1);
 
   useTick((delta) => {
     if (!active) return;
-    const stagger = 0.0015 + index * 0.00008;
+    const mbps = Math.max(0, Number(transferBytesPerSecond ?? 0)) / 1_000_000;
+    const speedFactor = Math.min(3, Math.max(0.55, mbps > 0 ? 0.55 + Math.log10(mbps + 1) * 0.9 : 1));
+    const stagger = (0.0015 + index * 0.00008) * speedFactor;
     setProgress((current) => {
       let next = current + stagger * delta * direction.current;
       if (next >= 1) { next = 1; direction.current = -1; }
@@ -88,6 +90,7 @@ export function IslandTransferDemo({ tileDim, mapWidth, mapHeight, transferActiv
           speech={worker.speech}
           character={character}
           active={transferActive && demo.event.active}
+          transferBytesPerSecond={bytesPerSecond}
         />
       ))}
     </Container>
