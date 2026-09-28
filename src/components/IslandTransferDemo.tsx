@@ -28,13 +28,14 @@ function TransferWorker({ index, tileDim, startX, endX, y, speech, character, ac
 
   const goingToJotha = direction.current === 1;
   const x = (startX + (endX - startX) * progress) * tileDim;
+  const routeY = y + (goingToJotha ? 0 : 0.18);
 
   return (
     <Container>
       {goingToJotha && (
         <Graphics
           x={x}
-          y={y * tileDim}
+          y={routeY * tileDim}
           draw={(g) => {
             g.clear();
             g.beginFill(0xb78955);
@@ -46,7 +47,7 @@ function TransferWorker({ index, tileDim, startX, endX, y, speech, character, ac
       )}
       <Character
         x={x}
-        y={y * tileDim}
+        y={routeY * tileDim}
         orientation={goingToJotha ? 0 : 180}
         isMoving={active}
         speechText={speech}
@@ -85,7 +86,7 @@ export function IslandTransferDemo({ tileDim, mapWidth, mapHeight, transferActiv
           tileDim={tileDim}
           startX={start.x}
           endX={end.x}
-          y={start.y + (end.y - start.y) * ((index * 0.14) % 1) + (index % 2) * 0.28}
+          y={start.y + (end.y - start.y) * ((index * 0.14) % 1) + (index - 2) * 0.16}
           speech={worker.speech}
           character={character}
           active={transferActive}
