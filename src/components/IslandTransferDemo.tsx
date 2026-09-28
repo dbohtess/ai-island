@@ -6,14 +6,15 @@ import { characters } from '../../data/characters';
 import { buildTransferDemo } from '../island/demo';
 import { JothaBuilding, KahfCave } from './IslandLandmarks';
 
-type Props = { tileDim: number; mapWidth: number; mapHeight: number };
+type Props = { tileDim: number; mapWidth: number; mapHeight: number; transferActive?: boolean; bytesPerSecond?: number };
 const WORKER_CHARACTER = 'f1';
 
-function TransferWorker({ index, tileDim, startX, endX, y, speech, character }: any) {
+function TransferWorker({ index, tileDim, startX, endX, y, speech, character, active }: any) {
   const [progress, setProgress] = useState((index * 0.14) % 1);
   const direction = useRef<1 | -1>(1);
 
   useTick((delta) => {
+    if (!active) return;
     const stagger = 0.0015 + index * 0.00008;
     setProgress((current) => {
       let next = current + stagger * delta * direction.current;
@@ -45,7 +46,7 @@ function TransferWorker({ index, tileDim, startX, endX, y, speech, character }: 
         x={x}
         y={y * tileDim}
         orientation={goingToJotha ? 0 : 180}
-        isMoving
+        isMoving={active}
         speechText={speech}
         textureUrl={character.textureUrl}
         spritesheetData={character.spritesheetData}
@@ -56,9 +57,9 @@ function TransferWorker({ index, tileDim, startX, endX, y, speech, character }: 
   );
 }
 
-export function IslandTransferDemo({ tileDim, mapWidth, mapHeight }: Props) {
+export function IslandTransferDemo({ tileDim, mapWidth, mapHeight, transferActive = true, bytesPerSecond }: Props) {
   const character = characters.find((entry) => entry.name === WORKER_CHARACTER);
-  const demo = buildTransferDemo();
+  const demo = buildTransferDemo(bytesPerSecond);
   const start = { x: Math.max(2, Math.floor(mapWidth * 0.18)), y: Math.max(2, Math.floor(mapHeight * 0.35)) };
   const end = { x: Math.min(mapWidth - 2, Math.max(start.x + 6, Math.floor(mapWidth * 0.58))), y: start.y };
 
@@ -86,6 +87,7 @@ export function IslandTransferDemo({ tileDim, mapWidth, mapHeight }: Props) {
           y={start.y + (index % 2) * 0.65}
           speech={worker.speech}
           character={character}
+          active={transferActive && demo.event.active}
         />
       ))}
     </Container>
