@@ -13,6 +13,7 @@ export const Character = ({
   isThinking = false,
   isSpeaking = false,
   emoji = '',
+  speechText = '',
   isViewer = false,
   speed = 0.1,
   onClick,
@@ -31,6 +32,8 @@ export const Character = ({
   // Shows a speech bubble if true.
   isSpeaking?: boolean;
   emoji?: string;
+  // Optional lightweight ambient speech used by AI Island workers.
+  speechText?: string;
   // Highlights the player.
   isViewer?: boolean;
   // The speed of the animation. Can be tuned depending on the side and speed of the NPC.
@@ -93,6 +96,7 @@ export const Character = ({
         // TODO: We'll eventually have separate assets for thinking and speech animations.
         <Text x={18} y={-10} scale={0.8} text={'💬'} anchor={{ x: 0.5, y: 0.5 }} />
       )}
+      {speechText && <SpeechBubble text={speechText} />}
       {isViewer && <ViewerIndicator />}
       <AnimatedSprite
         ref={ref}
@@ -107,6 +111,29 @@ export const Character = ({
     </Container>
   );
 };
+
+function SpeechBubble({ text }: { text: string }) {
+  const draw = useCallback((g: PIXI.Graphics) => {
+    g.clear();
+    g.beginFill(0xffffff, 0.92);
+    g.lineStyle(1, 0x1f2937, 0.9);
+    g.drawRoundedRect(-34, -42, 68, 18, 5);
+    g.endFill();
+  }, []);
+
+  return (
+    <Container>
+      <Graphics draw={draw} />
+      <Text
+        x={0}
+        y={-33}
+        text={text}
+        anchor={{ x: 0.5, y: 0.5 }}
+        style={new PIXI.TextStyle({ fontFamily: 'monospace', fontSize: 7, fill: 0x111827 })}
+      />
+    </Container>
+  );
+}
 
 function ViewerIndicator() {
   const draw = useCallback((g: PIXI.Graphics) => {
