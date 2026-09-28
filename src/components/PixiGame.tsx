@@ -2,7 +2,7 @@ import * as PIXI from 'pixi.js';
 import { useApp } from '@pixi/react';
 import { Player, SelectElement } from './Player.tsx';
 import { useEffect, useRef, useState } from 'react';
-import { PixiStaticMap } from './PixiStaticMap.tsx';
+import { IslandBackground } from './IslandBackground.tsx';
 import PixiViewport from './PixiViewport.tsx';
 import { Viewport } from 'pixi-viewport';
 import { Id } from '../../convex/_generated/dataModel';
@@ -108,11 +108,8 @@ export const PixiGame = (props: {
       worldHeight={height * tileDim}
       viewportRef={viewportRef}
     >
-      <PixiStaticMap
-        map={props.game.worldMap}
-        onpointerup={onMapPointerUp}
-        onpointerdown={onMapPointerDown}
-      />
+      <IslandBackground width={width * tileDim} height={height * tileDim} />
+      <PIXI.Graphics />
       <IslandTransferDemo
         tileDim={tileDim}
         mapWidth={width}
