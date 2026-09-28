@@ -1,4 +1,5 @@
 import * as PIXI from 'pixi.js';
+import { Graphics } from '@pixi/react';
 import { useApp } from '@pixi/react';
 import { Player, SelectElement } from './Player.tsx';
 import { useEffect, useRef, useState } from 'react';
@@ -109,7 +110,13 @@ export const PixiGame = (props: {
       viewportRef={viewportRef}
     >
       <IslandBackground width={width * tileDim} height={height * tileDim} />
-      <PIXI.Graphics />
+      <Graphics
+        eventMode="static"
+        hitArea={new PIXI.Rectangle(0, 0, width * tileDim, height * tileDim)}
+        onpointerup={onMapPointerUp}
+        onpointerdown={onMapPointerDown}
+        draw={(g) => { g.clear(); }}
+      />
       <IslandTransferDemo
         tileDim={tileDim}
         mapWidth={width}
