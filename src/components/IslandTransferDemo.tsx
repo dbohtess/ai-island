@@ -4,6 +4,7 @@ import * as PIXI from 'pixi.js';
 import { Character } from './Character';
 import { characters } from '../../data/characters';
 import { buildTransferDemo } from '../island/demo';
+import { JothaBuilding, KahfCave } from './IslandLandmarks';
 
 type Props = { tileDim: number; mapWidth: number; mapHeight: number };
 const WORKER_CHARACTER = 'f1';
@@ -73,8 +74,8 @@ export function IslandTransferDemo({ tileDim, mapWidth, mapHeight }: Props) {
   return (
     <Container>
       <Graphics draw={drawRoute} />
-      <Text x={start.x * tileDim} y={(start.y - 1) * tileDim} text="KAHF" anchor={0.5} />
-      <Text x={end.x * tileDim} y={(end.y - 1) * tileDim} text="JOTHA" anchor={0.5} />
+      <KahfCave x={start.x * tileDim} y={start.y * tileDim} tileDim={tileDim} />
+      <JothaBuilding x={end.x * tileDim} y={end.y * tileDim} tileDim={tileDim} />
       {demo.workers.map((worker, index) => (
         <TransferWorker
           key={worker.id}
