@@ -15,6 +15,7 @@ import { PositionIndicator } from './PositionIndicator.tsx';
 import { SHOW_DEBUG_UI } from './Game.tsx';
 import { ServerGame } from '../hooks/serverGame.ts';
 import { IslandTransferDemo } from './IslandTransferDemo.tsx';
+import { useIslandTelemetry } from '../hooks/useIslandTelemetry.ts';
 
 export const PixiGame = (props: {
   worldId: Id<'worlds'>;
@@ -82,6 +83,10 @@ export const PixiGame = (props: {
   };
   const { width, height, tileDim } = props.game.worldMap;
   const players = [...props.game.world.players.values()];
+  const { data: islandTelemetry, connected: islandTelemetryConnected } = useIslandTelemetry();
+  const transfer = islandTelemetry?.snapshot.transfers?.find(
+    (item) => item.source === 'kahf' && item.destination === 'jotha',
+  );
 
   // Zoom on the user’s avatar when it is created
   useEffect(() => {
@@ -108,7 +113,13 @@ export const PixiGame = (props: {
         onpointerup={onMapPointerUp}
         onpointerdown={onMapPointerDown}
       />
-      <IslandTransferDemo tileDim={tileDim} mapWidth={width} mapHeight={height} />
+      <IslandTransferDemo
+        tileDim={tileDim}
+        mapWidth={width}
+        mapHeight={height}
+        transferActive={islandTelemetryConnected && !!transfer?.active}
+        bytesPerSecond={transfer?.bytesPerSecond}
+      />
       {players.map(
         (p) =>
           // Only show the path for the human player in non-debug mode.
