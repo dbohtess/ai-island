@@ -62,21 +62,20 @@ function TransferWorker({ index, tileDim, startX, endX, y, speech, character, ac
 export function IslandTransferDemo({ tileDim, mapWidth, mapHeight, transferActive = true, bytesPerSecond }: Props) {
   const character = characters.find((entry) => entry.name === WORKER_CHARACTER);
   const demo = buildTransferDemo(bytesPerSecond);
-  const start = { x: Math.max(2, Math.floor(mapWidth * 0.18)), y: Math.max(2, Math.floor(mapHeight * 0.35)) };
-  const end = { x: Math.min(mapWidth - 2, Math.max(start.x + 6, Math.floor(mapWidth * 0.58))), y: start.y };
-
-  const drawRoute = useCallback((g: PIXI.Graphics) => {
-    g.clear();
-    g.lineStyle(Math.max(2, tileDim / 8), 0x6b5b4b, 0.7);
-    g.moveTo(start.x * tileDim, start.y * tileDim);
-    g.lineTo(end.x * tileDim, end.y * tileDim);
-  }, [tileDim, start.x, start.y, end.x, end.y]);
+  // Place the first two real island landmarks on the main AI Island road.
+  const start = {
+    x: Math.max(2, Math.floor(mapWidth * 0.23)),
+    y: Math.max(2, Math.floor(mapHeight * 0.58)),
+  };
+  const end = {
+    x: Math.min(mapWidth - 2, Math.floor(mapWidth * 0.76)),
+    y: Math.max(2, Math.floor(mapHeight * 0.43)),
+  };
 
   if (!character) return null;
 
   return (
     <Container>
-      <Graphics draw={drawRoute} />
       <KahfCave x={start.x * tileDim} y={start.y * tileDim} tileDim={tileDim} />
       <JothaBuilding x={end.x * tileDim} y={end.y * tileDim} tileDim={tileDim} />
       {demo.workers.map((worker, index) => (
@@ -86,7 +85,7 @@ export function IslandTransferDemo({ tileDim, mapWidth, mapHeight, transferActiv
           tileDim={tileDim}
           startX={start.x}
           endX={end.x}
-          y={start.y + (index % 2) * 0.65}
+          y={start.y + (end.y - start.y) * ((index * 0.14) % 1) + (index % 2) * 0.28}
           speech={worker.speech}
           character={character}
           active={transferActive}
